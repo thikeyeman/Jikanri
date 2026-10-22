@@ -1,0 +1,197 @@
+{
+  "app": "Jikanri fictional demo",
+  "formatVersion": 3,
+  "store": {
+    "version": 7,
+    "jobs": [
+      {
+        "id": "research",
+        "name": "Research",
+        "color": "#426b52",
+        "weekdays": [
+          1,
+          2,
+          3,
+          4,
+          5
+        ],
+        "dailyMax": 6,
+        "weeklyLimit": 16,
+        "monthlyLimit": 52,
+        "minBlock": 2,
+        "monthlyWarning": 48,
+        "schedulable": true,
+        "archived": false,
+        "monthSettings": {},
+        "constraints": {
+          "blockWeekends": false,
+          "useOriginalHolidays": false,
+          "blockedWeekdays": [],
+          "dateOverrides": [
+            {
+              "date": "2026-10-12",
+              "mode": "block",
+              "reason": "University holiday (fictional)"
+            },
+            {
+              "date": "2026-10-19",
+              "mode": "block",
+              "reason": "Professor unavailable (fictional)"
+            },
+            {
+              "date": "2026-10-23",
+              "mode": "max",
+              "maxHours": 2,
+              "reason": "Only a short lab session"
+            },
+            {
+              "date": "2026-10-24",
+              "mode": "allow",
+              "reason": "Special weekend experiment"
+            }
+          ],
+          "blockedRanges": [
+            {
+              "start": "2026-10-14",
+              "end": "2026-10-14",
+              "reason": "Lab closed (fictional)"
+            }
+          ],
+          "holidays": []
+        }
+      },
+      {
+        "id": "tour-guiding",
+        "name": "Tour guiding",
+        "color": "#a56a28",
+        "weekdays": [
+          0,
+          5,
+          6
+        ],
+        "dailyMax": 4,
+        "weeklyLimit": 12,
+        "monthlyLimit": 40,
+        "minBlock": 3,
+        "monthlyWarning": 32,
+        "schedulable": true,
+        "archived": false,
+        "monthSettings": {},
+        "constraints": {
+          "blockWeekends": false,
+          "useOriginalHolidays": false,
+          "blockedWeekdays": [],
+          "dateOverrides": [],
+          "blockedRanges": [],
+          "holidays": []
+        }
+      },
+      {
+        "id": "cafe",
+        "name": "Café",
+        "color": "#99452f",
+        "weekdays": [
+          0,
+          3,
+          6
+        ],
+        "dailyMax": 4,
+        "weeklyLimit": 8,
+        "monthlyLimit": 20,
+        "minBlock": 2,
+        "monthlyWarning": 16,
+        "schedulable": true,
+        "archived": false,
+        "monthSettings": {},
+        "constraints": {
+          "blockWeekends": false,
+          "useOriginalHolidays": false,
+          "blockedWeekdays": [],
+          "dateOverrides": [],
+          "blockedRanges": [],
+          "holidays": []
+        }
+      }
+    ],
+    "plannerJobId": "research",
+    "entries": {
+      "2026-10-01": {
+        "research": 3
+      },
+      "2026-10-02": {
+        "research": 2
+      },
+      "2026-10-03": {
+        "tour-guiding": 4
+      },
+      "2026-10-04": {
+        "tour-guiding": 3,
+        "cafe": 3
+      },
+      "2026-10-05": {
+        "research": 3
+      },
+      "2026-10-06": {
+        "research": 2
+      },
+      "2026-10-08": {
+        "research": 3
+      },
+      "2026-10-09": {
+        "research": 2,
+        "tour-guiding": 3
+      },
+      "2026-10-10": {
+        "cafe": 3
+      },
+      "2026-10-11": {
+        "tour-guiding": 4
+      },
+      "2026-10-13": {
+        "research": 3
+      },
+      "2026-10-15": {
+        "research": 2
+      },
+      "2026-10-16": {
+        "research": 3
+      },
+      "2026-10-17": {
+        "tour-guiding": 3
+      },
+      "2026-10-18": {
+        "cafe": 3
+      },
+      "2026-10-20": {
+        "research": 2
+      },
+      "2026-10-22": {
+        "research": 3
+      },
+      "2026-10-24": {
+        "tour-guiding": 4
+      },
+      "2026-10-26": {
+        "research": 2
+      },
+      "2026-10-27": {
+        "research": 2
+      },
+      "2026-10-28": {
+        "cafe": 3
+      },
+      "2026-10-29": {
+        "research": 2
+      },
+      "2026-10-30": {
+        "tour-guiding": 3
+      }
+    },
+    "settings": {
+      "rollingLimit": 28,
+      "dailyMax": 8
+    },
+    "monthSettings": {},
+    "updatedAt": null
+  }
+}

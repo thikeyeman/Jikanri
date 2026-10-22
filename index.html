@@ -1,0 +1,610 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jikanri — My work hours</title>
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <main class="wrap">
+      <header class="page-head">
+        <div>
+          <h1>
+            <span class="brand-mark" lang="ja" aria-hidden="true">時</span>
+            Jikanri <span lang="ja">ジカンリ</span>
+          </h1>
+          <p class="sub">A little room for your time.</p>
+        </div>
+        <div class="header-controls">
+          <button id="demoBtn" type="button">Try demo</button
+          ><span id="demoMode" class="demo-badge" hidden>Demo mode</span
+          ><button id="exitDemoBtn" type="button" hidden>Exit demo</button
+          ><a href="#settings" class="settings-link" aria-label="Settings"
+            ><svg
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.7"
+              aria-hidden="true"
+            >
+              <path
+                d="m9 3 1-1h4l1 3 2 1 3-1 2 4-2 2v2l2 2-2 4-3-1-2 1-1 3h-4l-1-3-2-1-3 1-2-4 2-2v-2L2 9l2-4 3 1 2-1Z"
+              />
+              <circle cx="12" cy="12" r="3" /></svg
+            ><span>Settings</span></a
+          >
+        </div>
+      </header>
+      <div class="toolbar">
+        <button id="prevMonthBtn" aria-label="Previous month">‹</button
+        ><label class="month-label" for="month"
+          >Month<select id="month"></select></label
+        ><button id="nextMonthBtn" aria-label="Next month">›</button
+        ><button id="todayBtn" type="button">Today</button
+        ><button id="undoBtn" disabled>Undo</button
+        ><button id="redoBtn" disabled>Redo</button
+        ><span role="status" id="saveStatus">Ready</span>
+      </div>
+      <section
+        id="monthlyOverview"
+        class="monthly-overview"
+        aria-label="Recorded hours this month"
+      ></section>
+      <aside id="demoIntro" class="demo-intro" hidden>
+        <strong>Fictional October 2026</strong>
+        <p>
+          A fictional student balancing research and part-time jobs. Try
+          planning additional work while respecting availability and
+          working-hour limits.
+        </p>
+        <p class="note">
+          Tour guiding represents evening and weekend shifts; Jikanri tracks
+          daily hours, not shift times.
+        </p>
+        <a id="demoPlanLink" href="#planner">Plan more work ↓</a>
+      </aside>
+      <div id="jobLegend" class="job-legend"></div>
+      <p id="calendarHelp" class="note"></p>
+      <div class="work-layout">
+        <section class="calendar-panel" aria-label="Monthly calendar">
+          <div id="calendar" class="calendar"></div>
+          <p class="note">
+            Select a date to record hours. All jobs count toward your limits.
+          </p>
+        </section>
+        <aside class="day-panel">
+          <section aria-labelledby="dayTitle">
+            <h2 id="dayTitle">Selected day</h2>
+            <button id="copyLastEntryBtn" type="button">Copy last entry</button>
+            <p id="copyEntryStatus" class="note" role="status"></p>
+            <div id="dayEditor"></div>
+            <strong id="dayTotal"></strong>
+            <p id="dayAvailability" class="note"></p>
+          </section>
+          <section class="rolling-panel" aria-labelledby="rollingTitle">
+            <h2 id="rollingTitle">Rolling seven days</h2>
+            <label class="date-label"
+              >Ending on<input id="rollingDate" type="date"
+            /></label>
+            <div id="rollingDetail" aria-live="polite"></div>
+            <p class="note">
+              This date and the previous six days, across all jobs.
+            </p>
+          </section>
+        </aside>
+      </div>
+      <details id="planner" class="card">
+        <summary>Plan more work</summary>
+        <div class="planner-controls">
+          <label>Job to schedule<select id="plannerJob"></select></label
+          ><button id="planBtn" class="primary">
+            Find available work hours</button
+          ><button id="applyPlanBtn" disabled>Apply all suggestions</button>
+        </div>
+        <p class="note" id="plannerHelp">
+          Suggestions count hours from every job. Applying one date clears the
+          remaining suggestions.
+        </p>
+        <div id="planSummary" class="solver-box"></div>
+        <div id="planTable"></div>
+      </details>
+      <details id="settings" class="card">
+        <summary>Settings</summary>
+        <section aria-labelledby="jobsTitle">
+          <h2 id="jobsTitle">My jobs</h2>
+          <button
+            id="newJobBtn"
+            type="button"
+            aria-expanded="false"
+            aria-controls="jobEditor"
+          >
+            + Add a job
+          </button>
+          <div id="newJobSlot"></div>
+          <div id="jobsList"></div>
+          <div id="jobEditorHome">
+            <div id="jobEditor" class="job-editor" hidden>
+              <form id="jobForm">
+                <h3 id="jobFormTitle">Add a job</h3>
+                <details id="jobBasic" class="job-section" open>
+                  <summary>Basic information</summary>
+                  <div class="settings">
+                    <label
+                      >Job name<input
+                        id="jobName"
+                        maxlength="80"
+                        required
+                        placeholder="e.g. Café" /></label
+                    ><label
+                      >Color<input id="jobColor" type="color" value="#2563eb"
+                    /></label>
+                  </div>
+                  <label class="toggle-label"
+                    ><input
+                      id="jobSchedulable"
+                      type="checkbox"
+                      checked
+                    />Available for scheduling</label
+                  >
+                </details>
+              </form>
+              <details id="jobWorking" class="job-section">
+                <summary>Working days &amp; availability</summary>
+                <fieldset>
+                  <legend>Usual working days</legend>
+                  <div id="jobWeekdays" class="weekday-row"></div>
+                </fieldset>
+                <p class="note">
+                  Working days guide suggestions. You can always record hours
+                  actually worked, including for archived jobs.
+                </p>
+                <details id="jobAvailability" class="job-section">
+                  <summary>Availability exceptions</summary>
+                  <h3 id="controllerTitle">Dates for this job</h3>
+                  <p id="controllerSummary" class="note"></p>
+                  <p class="note">
+                    Applies to the job being edited only. An available date
+                    exception bypasses usual working days and other date blocks,
+                    but never hour limits or archived status. Specific dates
+                    take precedence over ranges; overlapping ranges use the last
+                    matching saved rule. Notes are optional.
+                  </p>
+                  <div class="controller-grid">
+                    <section>
+                      <h3>Specific date</h3>
+                      <div class="controller-row">
+                        <label
+                          >Date<input id="overrideDate" type="date" /></label
+                        ><label
+                          >Availability<select id="overrideMode">
+                            <option value="block">Unavailable</option>
+                            <option value="allow">Available</option>
+                            <option value="max">
+                              Available with a maximum
+                            </option>
+                          </select></label
+                        ><label id="overrideMaxLabel"
+                          >Daily job maximum<input
+                            id="overrideMax"
+                            type="number"
+                            min="0"
+                            step="0.5"
+                            value="4" /></label
+                        ><label
+                          >Reason<input
+                            id="overrideReason"
+                            maxlength="160"
+                            type="text" /></label
+                        ><button id="addOverrideBtn">Save override</button>
+                      </div>
+                      <div id="overrideList" class="rule-list"></div>
+                      <h3>Date range</h3>
+                      <div class="controller-row">
+                        <label>Start<input id="rangeStart" type="date" /></label
+                        ><label>End<input id="rangeEnd" type="date" /></label
+                        ><label
+                          >Availability<select id="rangeMode">
+                            <option value="block">Unavailable</option>
+                            <option value="allow">Specially available</option>
+                          </select></label
+                        ><label
+                          >Reason<input
+                            id="rangeReason"
+                            maxlength="160"
+                            type="text" /></label
+                        ><button id="addRangeBtn">Save range</button>
+                      </div>
+                      <div id="rangeList" class="rule-list"></div>
+                    </section>
+                  </div>
+                  <details class="legacy-rules">
+                    <summary>Extra recurring rules &amp; holidays</summary>
+                    <p class="note">
+                      These additional rules are preserved from earlier
+                      versions. Usual working days are set above.
+                    </p>
+                    <div class="weekday-row">
+                      <label
+                        ><input id="blockWeekends" type="checkbox" />Block
+                        weekends</label
+                      ><label
+                        ><input id="useOriginalHolidays" type="checkbox" />Block
+                        listed holidays</label
+                      >
+                    </div>
+                    <p class="note">Additional blocked weekdays:</p>
+                    <div id="weekdayChecks" class="weekday-row"></div>
+                    <h3>Holiday dates</h3>
+                    <div class="controller-row">
+                      <label>Date<input id="holidayDate" type="date" /></label
+                      ><button id="addHolidayBtn">Add holiday</button>
+                    </div>
+                    <div id="holidayPreview" class="rule-list"></div>
+                  </details>
+                  <button id="resetRulesBtn" class="danger">
+                    Clear this job's date restrictions
+                  </button>
+                </details>
+              </details>
+              <details id="jobMonthLimits" class="job-section">
+                <summary>Working-hour limits</summary>
+                <h3 id="jobLimitsTitle">Job limits</h3>
+                <label
+                  >Editing limits for<select id="jobLimitScope">
+                    <option value="default">Default limits</option>
+                    <option value="month" selected>This month’s limits</option>
+                  </select></label
+                >
+                <p id="jobLimitStatus" class="note"></p>
+                <div class="settings">
+                  <label
+                    >Daily job limit<input
+                      id="pt2DailyMax"
+                      type="number"
+                      min="0"
+                      step="0.5" /></label
+                  ><label
+                    >Sunday–Saturday limit<input
+                      id="weeklyPt2Limit"
+                      type="number"
+                      min="0"
+                      step="0.5" /></label
+                  ><label
+                    >Monthly limit<input
+                      id="monthlyPt2Limit"
+                      type="number"
+                      min="0"
+                      step="0.5" /></label
+                  ><label
+                    >Minimum additional block<input
+                      id="minPt2Hours"
+                      type="number"
+                      min="0"
+                      step="0.5" /></label
+                  ><label
+                    >Monthly warning threshold<input
+                      id="researchMonthlyWarning"
+                      type="number"
+                      min="0"
+                      step="0.5"
+                  /></label>
+                </div>
+                <p class="note">
+                  Daily maximum includes recorded and proposed hours. Minimum
+                  block applies to each new addition. Limit changes save when
+                  you leave an input.
+                </p>
+                <div id="jobMonthActions" class="toolbar">
+                  <button id="copyPrevLimitsBtn">
+                    Copy last month for this job</button
+                  ><button id="resetMonthLimitsBtn">Use job defaults</button
+                  ><button id="setDefaultLimitsBtn">
+                    Save as job defaults
+                  </button>
+                </div>
+              </details>
+              <div class="toolbar">
+                <button
+                  id="saveJobBtn"
+                  class="primary"
+                  type="submit"
+                  form="jobForm"
+                >
+                  Add job</button
+                ><button id="cancelJobBtn" type="button">Cancel</button>
+              </div>
+              <p id="jobOverrides" class="note"></p>
+              <p id="jobError" role="status"></p>
+              <p class="note">
+                Save job details and usual working days above. Limits and saved
+                availability exceptions save immediately and can be undone.
+              </p>
+            </div>
+          </div>
+        </section>
+        <details class="advanced">
+          <summary>Combined limits — all jobs</summary>
+          <h2 id="planningMonthTitle">Planning limits</h2>
+          <p id="planningScopeStatus" class="note"></p>
+          <p class="note">
+            These limits count recorded hours across every job, including
+            archived jobs. Values below apply to the selected month.
+          </p>
+          <div class="settings">
+            <label
+              >Rolling seven-day limit<input
+                id="rollingLimit"
+                type="number"
+                min="0"
+                step="0.5" /></label
+            ><label
+              >Total daily limit<input
+                id="dailyMax"
+                type="number"
+                min="0"
+                max="24"
+                step="0.5"
+            /></label>
+          </div>
+          <div class="toolbar">
+            <button id="copyGlobalLimitsBtn">Copy last month</button
+            ><button id="resetGlobalLimitsBtn">Use combined defaults</button
+            ><button id="defaultGlobalLimitsBtn">
+              Save as combined defaults</button
+            ><button id="presetBtn">28-hour student preset</button>
+          </div>
+        </details>
+
+        <p class="note">
+          Limits are planning assumptions, not a legal compliance assessment.
+        </p>
+      </details>
+      <details class="card">
+        <summary>Monthly summary</summary>
+        <div id="monthMetrics" class="metric-strip"></div>
+        <div class="chart-wrap">
+          <svg
+            id="monthChart"
+            class="month-chart"
+            viewBox="0 0 1000 250"
+            role="img"
+            aria-label="Recorded hours by job and suggested hours"
+          ></svg>
+        </div>
+        <p id="category-summary"></p>
+        <p id="monthly-total"></p>
+        <p id="daily-average"></p>
+        <div id="weekly-summary"></div>
+      </details>
+      <p id="research-warnings" class="warning" role="status"></p>
+      <details class="card">
+        <summary>Backups and recovery</summary>
+        <div class="toolbar">
+          <button id="exportBtn">Export JSON</button
+          ><button id="portableBtn">Download standalone HTML</button
+          ><button id="importBtn">Import backup</button
+          ><input
+            id="importFile"
+            type="file"
+            accept="application/json,.json"
+            hidden
+          /><button id="restoreEmbeddedBtn">Restore embedded snapshot</button
+          ><button id="restoreBackupBtn">Restore latest backup</button>
+        </div>
+        <div class="toolbar">
+          <button id="resetMonthBtn" class="danger">
+            Clear this month's hours</button
+          ><button id="resetAllBtn" class="danger">Clear all hours</button>
+        </div>
+        <p class="note">
+          Clearing hours keeps jobs and settings. Undo or restore a recovery
+          version to recover them. Standalone HTML includes your records; keep
+          it private.
+        </p>
+        <div id="backupList"></div>
+      </details>
+    </main>
+    <script id="demo-data" type="application/json">
+      {
+        "version": 7,
+        "jobs": [
+          {
+            "id": "research",
+            "name": "Research",
+            "color": "#426b52",
+            "weekdays": [1, 2, 3, 4, 5],
+            "dailyMax": 6,
+            "weeklyLimit": 16,
+            "monthlyLimit": 52,
+            "minBlock": 2,
+            "monthlyWarning": 48,
+            "schedulable": true,
+            "archived": false,
+            "monthSettings": {},
+            "constraints": {
+              "blockWeekends": false,
+              "useOriginalHolidays": false,
+              "blockedWeekdays": [],
+              "dateOverrides": [
+                {
+                  "date": "2026-10-12",
+                  "mode": "block",
+                  "reason": "University holiday (fictional)"
+                },
+                {
+                  "date": "2026-10-19",
+                  "mode": "block",
+                  "reason": "Professor unavailable (fictional)"
+                },
+                {
+                  "date": "2026-10-23",
+                  "mode": "max",
+                  "maxHours": 2,
+                  "reason": "Only a short lab session"
+                },
+                {
+                  "date": "2026-10-24",
+                  "mode": "allow",
+                  "reason": "Special weekend experiment"
+                }
+              ],
+              "blockedRanges": [
+                {
+                  "start": "2026-10-14",
+                  "end": "2026-10-14",
+                  "reason": "Lab closed (fictional)"
+                }
+              ],
+              "holidays": []
+            }
+          },
+          {
+            "id": "tour-guiding",
+            "name": "Tour guiding",
+            "color": "#a56a28",
+            "weekdays": [0, 5, 6],
+            "dailyMax": 4,
+            "weeklyLimit": 12,
+            "monthlyLimit": 40,
+            "minBlock": 3,
+            "monthlyWarning": 32,
+            "schedulable": true,
+            "archived": false,
+            "monthSettings": {},
+            "constraints": {
+              "blockWeekends": false,
+              "useOriginalHolidays": false,
+              "blockedWeekdays": [],
+              "dateOverrides": [],
+              "blockedRanges": [],
+              "holidays": []
+            }
+          },
+          {
+            "id": "cafe",
+            "name": "Café",
+            "color": "#99452f",
+            "weekdays": [0, 3, 6],
+            "dailyMax": 4,
+            "weeklyLimit": 8,
+            "monthlyLimit": 20,
+            "minBlock": 2,
+            "monthlyWarning": 16,
+            "schedulable": true,
+            "archived": false,
+            "monthSettings": {},
+            "constraints": {
+              "blockWeekends": false,
+              "useOriginalHolidays": false,
+              "blockedWeekdays": [],
+              "dateOverrides": [],
+              "blockedRanges": [],
+              "holidays": []
+            }
+          }
+        ],
+        "plannerJobId": "research",
+        "entries": {
+          "2026-10-01": {
+            "research": 3
+          },
+          "2026-10-02": {
+            "research": 2
+          },
+          "2026-10-03": {
+            "tour-guiding": 4
+          },
+          "2026-10-04": {
+            "tour-guiding": 3,
+            "cafe": 3
+          },
+          "2026-10-05": {
+            "research": 3
+          },
+          "2026-10-06": {
+            "research": 2
+          },
+          "2026-10-08": {
+            "research": 3
+          },
+          "2026-10-09": {
+            "research": 2,
+            "tour-guiding": 3
+          },
+          "2026-10-10": {
+            "cafe": 3
+          },
+          "2026-10-11": {
+            "tour-guiding": 4
+          },
+          "2026-10-13": {
+            "research": 3
+          },
+          "2026-10-15": {
+            "research": 2
+          },
+          "2026-10-16": {
+            "research": 3
+          },
+          "2026-10-17": {
+            "tour-guiding": 3
+          },
+          "2026-10-18": {
+            "cafe": 3
+          },
+          "2026-10-20": {
+            "research": 2
+          },
+          "2026-10-22": {
+            "research": 3
+          },
+          "2026-10-24": {
+            "tour-guiding": 4
+          },
+          "2026-10-26": {
+            "research": 2
+          },
+          "2026-10-27": {
+            "research": 2
+          },
+          "2026-10-28": {
+            "cafe": 3
+          },
+          "2026-10-29": {
+            "research": 2
+          },
+          "2026-10-30": {
+            "tour-guiding": 3
+          }
+        },
+        "settings": {
+          "rollingLimit": 28,
+          "dailyMax": 8
+        },
+        "monthSettings": {},
+        "updatedAt": null
+      }
+    </script>
+    <script id="embedded-data" type="application/json">
+      {
+        "version": 6,
+        "entries": {},
+        "settings": {},
+        "monthSettings": {},
+        "constraints": {}
+      }
+    </script>
+    <script src="vendor/solver.global.js"></script>
+    <script src="js/config.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/jobs.js"></script>
+    <script src="js/tracker.js"></script>
+    <script src="js/availability.js"></script>
+    <script src="js/optimizer.js"></script>
+    <script src="js/visualization.js"></script>
+    <script src="js/app.js"></script>
+  </body>
+</html>

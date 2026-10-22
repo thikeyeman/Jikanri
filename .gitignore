@@ -1,0 +1,22 @@
+node_modules/
+.DS_Store
+.private/
+coverage/
+*.log
+*backup*.json
+*portable*.html
+*private-snapshot*.html
+CountUnified*.html
+
+__pycache__/
+*.py[cod]
+
+# One-time personal conversion tools are not release assets.
+tools/
+tests/test_count_migration.py
+
+# Local development tools stay on this computer, not in the public tree.
+tests/
+scripts/
+package.json
+package-lock.json
